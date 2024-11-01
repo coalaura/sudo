@@ -1,4 +1,4 @@
-# sudo
+# sudo <sup>For Windows</sup>
 
 Ever wanted to `sudo` on Windows? Now you can! This tool, simply called sudo, brings the familiar `sudo` functionality to Windows, allowing you to run any command with elevated privileges—no more fiddling with right-click menus or navigating through the UAC dialog manually. Just type `sudo <command>` in your terminal, and it takes care of the rest.
 
