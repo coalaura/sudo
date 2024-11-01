@@ -10,6 +10,8 @@ Ever wanted to `sudo` on Windows? Now you can! This tool, simply called sudo, br
 - **`su` Mode:** For those who just want an admin shell, running `sudo su` gives you an elevated terminal window without extra commands.
 
 ## Usage
+
+To run a command in an elevated context (*automatically appends `&& pause && exit`*):
 ```bash
 sudo <command> [arguments...]
 ```
