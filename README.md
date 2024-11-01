@@ -16,6 +16,12 @@ To run a command in an elevated context (*automatically appends `&& pause && exi
 sudo <command> [arguments...]
 ```
 
+You can also chain commands with `;`:
+```bash
+# Runs `echo "hello" && echo "world"` in elevated context
+sudo echo "hello"; echo "world"
+```
+
 Or to just get an admin shell:
 ```bash
 sudo su

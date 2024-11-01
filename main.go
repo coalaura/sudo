@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
-	"os/exec"
+	"regexp"
 	"strings"
 
 	"github.com/coalaura/logger"
@@ -35,13 +35,7 @@ func main() {
 
 	cwd, _ := os.Getwd()
 
-	app := shell()
-	arg := fmt.Sprintf("/K cd /d %s", cwd)
-
-	if wt, err := exec.LookPath("wt"); err == nil {
-		arg = app + " " + arg
-		app = wt
-	}
+	var app string
 
 	if args[0] == "su" {
 		// Don't need to do anything here if we are already elevated
@@ -49,15 +43,35 @@ func main() {
 			return
 		}
 	} else {
-		arg += " && " + strings.Join(args, " ") + " && pause && exit"
+		app = strings.Join(args, " ")
 	}
+
+	cmd, arg := build(app, cwd, isAdmin)
 
 	if isAdmin {
-		app = args[0]
-		arg = strings.Join(args[1:], " ")
-
-		regular(app, arg, cwd)
+		regular(cmd, arg, cwd)
 	} else {
-		elevate(app, arg, cwd)
+		elevate(cmd, arg, cwd)
 	}
+}
+
+func build(app, cwd string, isAdmin bool) (string, string) {
+	var cmd string
+
+	if isAdmin {
+		cmd = app
+	} else {
+		if app == "" {
+			cmd = fmt.Sprintf("%s /K \"cd /d %s\"", shellWithWT(), cwd)
+		} else {
+			rgx := regexp.MustCompile(`\s*;\s*`)
+			app = rgx.ReplaceAllString(app, " && ")
+
+			cmd = fmt.Sprintf("%s /K \"cd /d %s && %s && pause && exit\"", shellWithWT(), cwd, app)
+		}
+	}
+
+	parts := strings.Split(cmd, " ")
+
+	return parts[0], strings.Join(parts[1:], " ")
 }

@@ -47,3 +47,13 @@ func shell() string {
 
 	return path
 }
+
+func shellWithWT() string {
+	sh := shell()
+
+	if wt, err := exec.LookPath("wt"); err == nil {
+		sh = wt + " " + sh
+	}
+
+	return sh
+}
