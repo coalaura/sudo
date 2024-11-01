@@ -29,13 +29,13 @@ jobs:
       - name: Build for ${{ matrix.goos }}_${{ matrix.goarch }}
         run: |
           if [ "${{ matrix.goos }}" = "windows" ]; then EXT=".exe"; else EXT=""; fi
-          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -ldflags="-s -w" -trimpath -o build/sudo_${{ github.ref_name }}_${{ matrix.goos }}_${{ matrix.goarch }}$EXT
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -ldflags="-s -w" -trimpath -o build/sudo_${{ github.ref_name }}_${{ matrix.goarch }}$EXT
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: sudo_${{ github.ref_name }}_${{ matrix.goos }}_${{ matrix.goarch }}
-          path: ./build/sudo_${{ github.ref_name }}_${{ matrix.goos }}_${{ matrix.goarch }}*
+          name: sudo_${{ github.ref_name }}_${{ matrix.goarch }}
+          path: ./build/sudo_${{ github.ref_name }}_${{ matrix.goarch }}*
 
   release:
     needs: build
