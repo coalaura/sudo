@@ -53,6 +53,10 @@ func main() {
 	} else {
 		elevate(cmd, arg, cwd)
 	}
+
+	if app == "" {
+		terminateParent()
+	}
 }
 
 func build(app, cwd string, isAdmin bool) (string, string) {
@@ -67,7 +71,15 @@ func build(app, cwd string, isAdmin bool) (string, string) {
 			rgx := regexp.MustCompile(`\s*;\s*`)
 			app = rgx.ReplaceAllString(app, " && ")
 
-			cmd = fmt.Sprintf("%s /K \"cd /d %s && %s && pause && exit\"", shellWithWT(), cwd, app)
+			var sh string
+
+			if isShell(app) {
+				sh = shell()
+			} else {
+				sh = shellWithWT()
+			}
+
+			cmd = fmt.Sprintf("%s /K \"cd /d %s && %s && exit\"", sh, cwd, app)
 		}
 	}
 

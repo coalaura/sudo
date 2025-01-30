@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"syscall"
 
 	"golang.org/x/sys/windows"
@@ -52,8 +54,48 @@ func shellWithWT() string {
 	sh := shell()
 
 	if wt, err := exec.LookPath("wt"); err == nil {
-		sh = wt + " " + sh
+		if exists, rect := processExists("WindowsTerminal.exe"); exists {
+			var (
+				size     string
+				position string
+			)
+
+			if w, h := terminalSize(); w != 0 {
+				size = fmt.Sprintf(" --size %d,%d ", w, h)
+			}
+
+			if rect != nil {
+				position = fmt.Sprintf(" --pos %d,%d", rect.Left+10, rect.Top)
+			}
+
+			sh = fmt.Sprintf("%s%s%s %s", wt, size, position, sh)
+		}
 	}
 
 	return sh
+}
+
+func isShell(app string) bool {
+	test := filepath.Base(app)
+
+	if !strings.HasSuffix(app, ".exe") {
+		test += ".exe"
+	}
+
+	shells := []string{
+		"cmd.exe",
+		"powershell.exe",
+		"pwsh.exe",
+		"wsl.exe",
+		"bash.exe",
+		"zsh.exe",
+	}
+
+	for _, sh := range shells {
+		if strings.EqualFold(sh, test) {
+			return true
+		}
+	}
+
+	return false
 }

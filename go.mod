@@ -1,10 +1,13 @@
 module sudo
 
-go 1.23.1
+go 1.23.4
+
+toolchain go1.23.5
 
 require (
 	github.com/coalaura/logger v1.2.3
-	golang.org/x/sys v0.26.0
+	golang.org/x/sys v0.29.0
+	golang.org/x/term v0.28.0
 )
 
 require (
