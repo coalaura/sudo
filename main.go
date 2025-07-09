@@ -35,12 +35,24 @@ func main() {
 
 	cwd, _ := os.Getwd()
 
-	var app string
+	var (
+		app  string
+		keep bool
+	)
 
 	if args[0] == "su" {
 		// Don't need to do anything here if we are already elevated
 		if isAdmin {
 			return
+		}
+
+		// --keep or -k to not close current window
+		for _, arg := range args[0:] {
+			if arg == "-k" || arg == "--keep" {
+				keep = true
+
+				break
+			}
 		}
 	} else {
 		app = strings.Join(args, " ")
@@ -54,7 +66,7 @@ func main() {
 		elevate(cmd, arg, cwd)
 	}
 
-	if app == "" {
+	if app == "" && !keep {
 		terminateParent()
 	}
 }
