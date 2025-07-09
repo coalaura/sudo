@@ -1,5 +1,10 @@
 @echo off
 
+echo Building...
 go build -o temp.exe
-temp.exe su --keep
-rm temp.exe
+
+echo Running...
+temp.exe who
+
+echo Done.
+del temp.exe

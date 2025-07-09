@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"os/exec"
 	"syscall"
 	"unsafe"
 
@@ -82,16 +80,4 @@ func elevate(app, params, cwd string) error {
 	}
 
 	return nil
-}
-
-func regular(app, params, cwd string) error {
-	cmd := exec.Command(app, params)
-
-	cmd.Dir = cwd
-
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	cmd.Stdin = os.Stdin
-
-	return cmd.Run()
 }
